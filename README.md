@@ -61,6 +61,39 @@ Router.register(this, new IRouterServiceRegister() {
 });
 ```
 
+### 接收路由服务初始化完成广播
+Router初始化时,动态注册InitializeCompleteReceiver，并实现onRouterServiceInitCompleted方法，它会在Router服务初始化完成后被触发，你可以在你应用的闪屏页Activity的onCreate中注册，并等待通知，通知成功后再进行app的下一步操作，一旦初始化完成，你可以任意的调用其他进程的接口。
+
+```
+public class SplashActivity extends AppCompatActivity {
+
+    private InitializeCompleteReceiver receiver;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
+        receiver = new InitializeCompleteReceiver() {
+            @Override
+            protected void onRouterServiceInitCompleted() {
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        };
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(InitializeCompleteReceiver.ACTION_ROUTER_SERVICE_COMPLETED);
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
+    }
+}
+```
+
 	
 ### 注册Provider
 
