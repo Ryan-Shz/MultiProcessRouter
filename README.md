@@ -1,0 +1,2 @@
+# MultiProcessRouter
+一个基本AnnotationProcessor实现的多进程路由框架。支持注解注册接口、多进程间数据交互。可快速应用于多进程模块化，所有进程间的请求为同步调用。
