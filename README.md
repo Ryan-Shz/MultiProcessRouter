@@ -3,6 +3,29 @@
 
 ## Usage
 
+### Gradle
+```
+dependencies {
+    classpath 'com.android.tools.build:gradle:2.3.1'
+    classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        maven {
+            url 'https://dl.bintray.com/shamschu/maven'
+        }
+    }
+}
+
+apply plugin: 'com.neenbedankt.android-apt'
+
+compile 'com.sc.framework:router:1.0.0'
+compile 'com.sc.framework:annotation:1.0.0'
+apt "com.sc.framework:compiler:1.0.0"
+```
+
 ### 创建每个进程对应的LocalRouterService
 
 LocalRouterService为本地Service(运行在每个单独进程中)，用来进行进程间的AIDL通信，一般来说，你只要继承LocalRouterService，并且在你的AndroidMenifest中注册该Service并使用android:process指定它所在的进程名称即可。
