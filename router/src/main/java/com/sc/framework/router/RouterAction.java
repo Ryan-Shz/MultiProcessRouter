@@ -6,7 +6,7 @@ import android.content.Context;
  * @author ShamsChu
  * @Date 17/5/10 下午3:54
  */
-public abstract class RouterAction<T> {
+public abstract class RouterAction<T, V> {
 
     /**
      * to perform an action function
@@ -14,7 +14,7 @@ public abstract class RouterAction<T> {
      * @param request RouterRequest
      * @return RouterResponse
      */
-    public abstract RouterResponse<T> invoke(Context context, RouterRequest request);
+    public abstract RouterResponse<V> invoke(Context context, RouterRequest<T> request);
 
     /**
      * action name, default is class simple name

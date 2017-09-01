@@ -12,7 +12,7 @@ import com.sc.framework.router.RouterResponse;
  * @Date 17/8/28 上午9:27
  */
 @Action(provider = TestProvider.class)
-public class TestActionOne extends RouterAction<String> {
+public class TestActionOne extends RouterAction<Void, String> {
 
     @Override
     public RouterResponse<String> invoke(Context context, RouterRequest request) {

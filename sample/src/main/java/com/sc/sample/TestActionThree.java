@@ -12,11 +12,11 @@ import com.sc.framework.router.RouterResponse;
  * @Date 17/8/30 上午9:10
  */
 @Action(provider = TestProviderThree.class)
-public class TestActionThree extends RouterAction<TestResult> {
+public class TestActionThree extends RouterAction<String, TestResult> {
     @Override
-    public RouterResponse<TestResult> invoke(Context context, RouterRequest request) {
+    public RouterResponse<TestResult> invoke(Context context, RouterRequest<String> request) {
         TestResult result = new TestResult();
-        result.setRtnMessage("this is three router test");
+        result.setRtnMessage(request.getParameter());
         return new RouterResponse.Builder<TestResult>()
             .result(result)
             .build();

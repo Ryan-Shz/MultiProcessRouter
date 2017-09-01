@@ -20,7 +20,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.router_test_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RouterRequest request = new RouterRequest.Builder()
+                RouterRequest<String> request = new RouterRequest.Builder<String>()
+                    .parameter("this is a request parameter")
                     .process(getPackageName() + ":second")
                     .provider("TestProviderThree")
                     .action("TestActionThree")

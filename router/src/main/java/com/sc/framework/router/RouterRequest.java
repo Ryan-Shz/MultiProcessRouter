@@ -35,7 +35,7 @@ public class RouterRequest<T> implements Parcelable {
         mProcess = in.readString();
         mProvider = in.readString();
         mAction = in.readString();
-        mParameter = in.readParcelable(this.getClass().getClassLoader());
+        mParameter = (T) in.readValue(this.getClass().getClassLoader());
     }
 
     public static final Creator<RouterRequest> CREATOR = new Creator<RouterRequest>() {
@@ -60,7 +60,7 @@ public class RouterRequest<T> implements Parcelable {
         dest.writeString(mProcess);
         dest.writeString(mProvider);
         dest.writeString(mAction);
-        dest.writeParcelable((Parcelable) mParameter, flags);
+        dest.writeValue(mParameter);
     }
 
     public static class Builder<T> {
