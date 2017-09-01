@@ -1,6 +1,7 @@
 package com.sc.framework.router;
 
 import android.content.Context;
+import android.os.Process;
 import android.support.annotation.NonNull;
 
 import com.sc.framework.router.cache.RouterCache;
@@ -29,6 +30,12 @@ public class Router {
 
     public synchronized static void register(@NonNull Context context, @NonNull IRouterServiceRegister serviceRegister) {
         RouterManager.getInstance().initialize(context, serviceRegister);
+    }
+
+    public synchronized static void killCurrProcess(Context context) {
+        unRegister(context);
+        Process.killProcess(Process.myPid());
+        System.exit(0);
     }
 
     public synchronized static void unRegister(@NonNull Context context) {

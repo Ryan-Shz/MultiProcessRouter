@@ -26,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
                     .action("TestActionThree")
                     .build();
                 RouterResponse<TestResult> response = Router.route(MainActivity.this, request);
+                if (response == null) {
+                    return;
+                }
                 if (response.isSuccess()) {
                     Toast.makeText(MainActivity.this, response.getResult().getRtnMessage(), Toast.LENGTH_LONG).show();
                 } else {

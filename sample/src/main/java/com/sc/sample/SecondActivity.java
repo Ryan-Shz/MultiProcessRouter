@@ -26,12 +26,11 @@ public class SecondActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 RouterRequest request = new RouterRequest.Builder()
-                        .process("com.sc.sample")
-                        .provider("TestProvider")
-                        .action("TestActionOne")
-                        .cacheStrategy(CacheStrategy.FIXED)
-                        .build();
-
+                    .process("com.sc.sample")
+                    .provider("TestProvider")
+                    .action("TestActionOne")
+                    .cacheStrategy(CacheStrategy.FIXED)
+                    .build();
                 RouterResponse<String> response = Router.route(v.getContext(), request);
                 if (response.isSuccess()) {
                     Toast.makeText(SecondActivity.this, response.getResult(), Toast.LENGTH_LONG).show();
@@ -45,11 +44,11 @@ public class SecondActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 RouterRequest request = new RouterRequest.Builder()
-                        .process("com.sc.sample")
-                        .provider("TestProvider")
-                        .action("TestActionTwo")
-                        .cacheStrategy(CacheStrategy.FIXED)
-                        .build();
+                    .process("com.sc.sample")
+                    .provider("TestProvider")
+                    .action("TestActionTwo")
+                    .cacheStrategy(CacheStrategy.FIXED)
+                    .build();
                 RouterResponse<TestResult> response = Router.route(v.getContext(), request);
                 if (response.isSuccess()) {
                     Toast.makeText(SecondActivity.this, response.getResult().getRtnMessage(), Toast.LENGTH_LONG).show();
@@ -63,9 +62,7 @@ public class SecondActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
-                Router.unRegister(v.getContext());
-                Process.killProcess(Process.myPid());
-                System.exit(0);
+                Router.killCurrProcess(v.getContext());
             }
         });
     }
