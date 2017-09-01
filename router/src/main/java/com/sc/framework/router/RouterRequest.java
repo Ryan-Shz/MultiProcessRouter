@@ -3,7 +3,7 @@ package com.sc.framework.router;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.sc.framework.router.cache.CacheStrategy;
+import com.sc.framework.router.cache.MemoryCacheStrategy;
 
 /**
  * @author ShamsChu
@@ -19,7 +19,7 @@ public class RouterRequest<T> implements Parcelable {
 
     private String mAction;
 
-    private CacheStrategy mCacheStrategy;
+    private MemoryCacheStrategy mCacheStrategy;
 
     private T mParameter;
 
@@ -69,7 +69,7 @@ public class RouterRequest<T> implements Parcelable {
         private String mProvider;
         private String mAction;
         private T mParameter;
-        private CacheStrategy mCacheStrategy = CacheStrategy.NONE;
+        private MemoryCacheStrategy mCacheStrategy = MemoryCacheStrategy.NONE;
 
         public Builder<T> process(String process) {
             mProcess = process;
@@ -91,7 +91,7 @@ public class RouterRequest<T> implements Parcelable {
             return this;
         }
 
-        public Builder<T> cacheStrategy(CacheStrategy cacheStrategy) {
+        public Builder<T> cacheStrategy(MemoryCacheStrategy cacheStrategy) {
             mCacheStrategy = cacheStrategy;
             return this;
         }
@@ -118,7 +118,7 @@ public class RouterRequest<T> implements Parcelable {
         return mParameter;
     }
 
-    public CacheStrategy getCacheStrategy() {
+    public MemoryCacheStrategy getCacheStrategy() {
         return mCacheStrategy;
     }
 

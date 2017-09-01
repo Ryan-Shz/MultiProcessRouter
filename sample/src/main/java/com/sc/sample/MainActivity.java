@@ -9,7 +9,9 @@ import android.widget.Toast;
 import com.sc.framework.router.Router;
 import com.sc.framework.router.RouterRequest;
 import com.sc.framework.router.RouterResponse;
-import com.sc.framework.router.cache.CacheStrategy;
+import com.sc.framework.router.cache.MemoryCacheStrategy;
+import com.sc.framework.router.cache.DefaultRouterCache;
+import com.sc.framework.router.utils.ProcessUtils;
 import com.sc.sample.bean.TestResult;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,8 +25,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 RouterRequest request = new RouterRequest.Builder()
+                    .process(ProcessUtils.getMainProcess(v.getContext()))
                     .provider("MainProcessProvider")
                     .action("MainProcessActionOne")
+                    .cacheStrategy(MemoryCacheStrategy.FIXED)
                     .build();
                 RouterResponse<String> response = Router.route(MainActivity.this, request);
                 if (response == null) {
@@ -45,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                     .process(getPackageName() + ":second")
                     .provider("SecondProcessProvider")
                     .action("SecondProcessAction")
-                    .cacheStrategy(CacheStrategy.NONE)
+                    .cacheStrategy(MemoryCacheStrategy.NONE)
                     .build();
                 RouterResponse<TestResult> response = Router.route(MainActivity.this, request);
                 if (response == null) {
@@ -67,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                     .process(getPackageName() + ":second")
                     .provider("SecondProcessProvider")
                     .action("SecondProcessAction")
-                    .cacheStrategy(CacheStrategy.FIXED)
+                    .cacheStrategy(MemoryCacheStrategy.FIXED)
                     .build();
                 RouterResponse<TestResult> response = Router.route(MainActivity.this, request);
                 if (response == null) {
@@ -85,6 +89,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(v.getContext(), SecondActivity.class));
+            }
+        });
+
+        findViewById(R.id.remove_cache_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DefaultRouterCache cache = (DefaultRouterCache) Router.getRouterCache();
+                RouterRequest key = cache.generateCacheKey(ProcessUtils.getMainProcess(v.getContext()), "MainProcessProvider", "MainProcessActionOne");
+                cache.remove(key);
             }
         });
 

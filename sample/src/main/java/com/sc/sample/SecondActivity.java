@@ -9,9 +9,8 @@ import android.widget.Toast;
 import com.sc.framework.router.Router;
 import com.sc.framework.router.RouterRequest;
 import com.sc.framework.router.RouterResponse;
-import com.sc.framework.router.cache.CacheStrategy;
+import com.sc.framework.router.cache.MemoryCacheStrategy;
 import com.sc.framework.router.utils.ProcessUtils;
-import com.sc.sample.bean.TestResult;
 
 /**
  * @author ShamsChu
@@ -30,7 +29,7 @@ public class SecondActivity extends AppCompatActivity {
                     .process(ProcessUtils.getMainProcess(v.getContext()))
                     .provider("MainProcessProvider")
                     .action("MainProcessActionOne")
-                    .cacheStrategy(CacheStrategy.FIXED)
+                    .cacheStrategy(MemoryCacheStrategy.FIXED)
                     .build();
                 RouterResponse<String> response = Router.route(v.getContext(), request);
                 if (response.isSuccess()) {

@@ -1,42 +1,20 @@
 package com.sc.framework.router.cache;
 
-import android.util.LruCache;
-
 import com.sc.framework.router.RouterRequest;
 import com.sc.framework.router.RouterResponse;
 
 /**
  * @author ShamsChu
- * @Date 17/8/29 下午7:07
+ * @Date 17/9/1 下午4:51
  */
-public class RouterCache {
+public interface RouterCache {
 
-    private LruCache<RouterRequest, RouterResponse> mCache;
+    void putCache(RouterRequest request, RouterResponse response);
 
-    public RouterCache() {
-        mCache = new LruCache<>(5);
-    }
+    RouterResponse getCache(RouterRequest request);
 
-    public void putCache(RouterRequest request, RouterResponse response) {
-        if (request == null || response == null) {
-            return;
-        }
-        CacheStrategy strategy = request.getCacheStrategy();
-        if (strategy == CacheStrategy.NONE) {
-            return;
-        }
-        if (!response.isSuccess()) {
-            return;
-        }
-        mCache.put(request, response);
-    }
+    void clear();
 
-    public RouterResponse getCache(RouterRequest request) {
-        CacheStrategy strategy = request.getCacheStrategy();
-        if (strategy == CacheStrategy.NONE) {
-            return null;
-        }
-        return mCache.get(request);
-    }
+    void remove(RouterRequest key);
 
 }
