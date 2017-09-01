@@ -7,6 +7,8 @@ import com.sc.framework.router.IRouterServiceRegister;
 import com.sc.framework.router.LocalRouterService;
 import com.sc.framework.router.Router;
 import com.sc.framework.router.utils.ProcessUtils;
+import com.sc.sample.service.MainProcessService;
+import com.sc.sample.service.SecondProcessService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +28,7 @@ public class TestApplication extends Application {
             public Map<String, Class<? extends LocalRouterService>> getServices() {
                 Map<String, Class<? extends LocalRouterService>> services = new HashMap<>();
                 services.put(ProcessUtils.getMainProcess(TestApplication.this), MainProcessService.class);
-                services.put(ProcessUtils.getMainProcess(TestApplication.this) + ProcessUtils.COLON + "second", ProcessServicetTwo.class);
+                services.put(ProcessUtils.getMainProcess(TestApplication.this) + ProcessUtils.COLON + "second", SecondProcessService.class);
                 return services;
             }
         });

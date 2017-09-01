@@ -26,9 +26,9 @@
             android:process=":second"
             android:theme="@style/AppTheme"/>
 
-        <service android:name=".MainProcessService"/>
+        <service android:name=".service.MainProcessService"/>
         <service
-            android:name=".ProcessServicetTwo"
+            android:name=".service.SecondProcessService"
             android:process=":second"/>
     </application>
 

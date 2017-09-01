@@ -1,4 +1,4 @@
-package com.sc.sample;
+package com.sc.sample.service;
 
 import com.sc.framework.router.LocalRouterService;
 

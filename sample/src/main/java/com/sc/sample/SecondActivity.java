@@ -1,7 +1,6 @@
 package com.sc.sample;
 
 import android.os.Bundle;
-import android.os.Process;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,6 +10,8 @@ import com.sc.framework.router.Router;
 import com.sc.framework.router.RouterRequest;
 import com.sc.framework.router.RouterResponse;
 import com.sc.framework.router.cache.CacheStrategy;
+import com.sc.framework.router.utils.ProcessUtils;
+import com.sc.sample.bean.TestResult;
 
 /**
  * @author ShamsChu
@@ -22,13 +23,13 @@ public class SecondActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
-        findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.request_main_process_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RouterRequest request = new RouterRequest.Builder()
-                    .process("com.sc.sample")
-                    .provider("TestProvider")
-                    .action("TestActionOne")
+                    .process(ProcessUtils.getMainProcess(v.getContext()))
+                    .provider("MainProcessProvider")
+                    .action("MainProcessActionOne")
                     .cacheStrategy(CacheStrategy.FIXED)
                     .build();
                 RouterResponse<String> response = Router.route(v.getContext(), request);
@@ -40,25 +41,7 @@ public class SecondActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RouterRequest request = new RouterRequest.Builder()
-                    .process("com.sc.sample")
-                    .provider("TestProvider")
-                    .action("TestActionTwo")
-                    .cacheStrategy(CacheStrategy.FIXED)
-                    .build();
-                RouterResponse<TestResult> response = Router.route(v.getContext(), request);
-                if (response.isSuccess()) {
-                    Toast.makeText(SecondActivity.this, response.getResult().getRtnMessage(), Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(SecondActivity.this, "Error", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.exit_second_process_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

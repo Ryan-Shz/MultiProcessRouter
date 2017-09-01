@@ -1,4 +1,4 @@
-package com.sc.sample;
+package com.sc.sample.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;

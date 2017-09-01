@@ -6,15 +6,27 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/router_test_btn"
+        android:id="@+id/local_router_request_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Router Test"/>
+        android:text="local router request"/>
+
+    <Button
+        android:id="@+id/wide_router_without_parameter_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wide Router without parameters"/>
+
+    <Button
+        android:id="@+id/wide_router_with_parameter_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wide Router with parameters"/>
 
     <Button
         android:id="@+id/open_second_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Open Second Activity"/>
+        android:text="Open Second process Activity"/>
 
 </LinearLayout>

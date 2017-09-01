@@ -5,19 +5,13 @@
               android:orientation="vertical">
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/request_main_process_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Wide Router Test"/>
+        android:text="Request Main Process"/>
 
     <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Local Router Test"/>
-
-    <Button
-        android:id="@+id/button3"
+        android:id="@+id/exit_second_process_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Exit Second Process"/>
