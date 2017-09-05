@@ -36,6 +36,9 @@ public class SplashActivity extends AppCompatActivity {
         registerReceiver(receiver, filter);
     }
 
+    /**
+     * Start your main activity
+     */
     private void startMainActivity() {
         Intent intent = new Intent(SplashActivity.this, MainActivity.class);
         startActivity(intent);
