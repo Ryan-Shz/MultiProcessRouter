@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.sc.framework.router.InitializeCompleteReceiver;
+import com.sc.framework.router.Router;
 
 /**
  * @author ShamsChu
@@ -20,17 +21,25 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        if (Router.isRouterServiceInitCompleted()) {
+            startMainActivity();
+            return;
+        }
         receiver = new InitializeCompleteReceiver() {
             @Override
             protected void onRouterServiceInitCompleted() {
-                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                startMainActivity();
             }
         };
         IntentFilter filter = new IntentFilter();
         filter.addAction(InitializeCompleteReceiver.ACTION_ROUTER_SERVICE_COMPLETED);
         registerReceiver(receiver, filter);
+    }
+
+    private void startMainActivity() {
+        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override

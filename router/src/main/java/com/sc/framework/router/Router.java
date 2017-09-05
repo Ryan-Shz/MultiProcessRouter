@@ -68,6 +68,10 @@ public class Router {
         return true;
     }
 
+    public static boolean isRouterServiceInitCompleted() {
+        return WideRouterManager.getInstance().isInitCompleted();
+    }
+
     /**
      * get Router service memory cache
      *

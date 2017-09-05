@@ -24,6 +24,7 @@ class WideRouterManager {
     private static final String TAG = WideRouterManager.class.getName();
     private final Map<String, Class<? extends LocalRouterService>> mRegisterServicesMap;
     private final Map<String, IWideRouterAIDL> mWideRouterAIDLMaps;
+    private boolean mInitCompleted = false;
 
     private WideRouterManager() {
         mRegisterServicesMap = new HashMap<>();
@@ -68,10 +69,10 @@ class WideRouterManager {
         if (wideRouterAIDL == null) {
             if (!bindService(context, process)) {
                 return new RouterResponse.Builder<>()
-                        .code(RouterResponse.CODE_ERROR)
-                        .error("Unable to connect to the process: " + process)
-                        .result(null)
-                        .build();
+                    .code(RouterResponse.CODE_ERROR)
+                    .error("Unable to connect to the process: " + process)
+                    .result(null)
+                    .build();
             }
         }
         RouterResponse response = null;
@@ -111,7 +112,9 @@ class WideRouterManager {
             mWideRouterAIDLMaps.put(mProcessName, wideRouterAIDL);
             Log.v(TAG, "router connect process: " + mProcessName + " success");
             if (mWideRouterAIDLMaps.size() == mRegisterServicesMap.size()) {
+                mInitCompleted = true;
                 InitializeCompleteReceiver.send(mContext);
+                Log.v(TAG, "Router Service initialize completed!");
             }
         }
 
@@ -121,5 +124,7 @@ class WideRouterManager {
         }
     }
 
-
+    boolean isInitCompleted() {
+        return mInitCompleted;
+    }
 }
