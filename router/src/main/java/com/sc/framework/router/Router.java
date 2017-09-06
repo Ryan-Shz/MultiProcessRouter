@@ -6,7 +6,10 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.sc.framework.router.cache.DefaultRouterCache;
+import com.sc.framework.router.cache.MemoryCacheStrategy;
 import com.sc.framework.router.cache.RouterCache;
+import com.sc.framework.router.constants.RouterConstants;
+import com.sc.framework.router.utils.ProcessUtils;
 
 /**
  * @author ShamsChu
@@ -24,9 +27,9 @@ public class Router {
     public static <V> RouterResponse<V> route(@NonNull Context context, @NonNull RouterRequest request) {
         if (!isRequestValid(request)) {
             return new RouterResponse.Builder<V>()
-                .code(RouterResponse.CODE_ERROR)
-                .error("RouterRequest is not valid!")
-                .build();
+                    .code(RouterResponse.CODE_ERROR)
+                    .error("RouterRequest is not valid!")
+                    .build();
         }
         RouterResponse<V> response = getMemoryCache(request);
         if (response != null) {
@@ -68,8 +71,21 @@ public class Router {
         return true;
     }
 
-    public static boolean isRouterServiceInitCompleted() {
-        return WideRouterManager.getInstance().isInitCompleted();
+    /**
+     * check if router service is initialized
+     *
+     * @param context Context
+     * @return if router service is initialized return true or false
+     */
+    public static boolean checkRouterServiceInitCompleted(Context context) {
+        RouterRequest request = new RouterRequest.Builder()
+                .process(ProcessUtils.getRouterProcess(context))
+                .provider(RouterConstants.PROVIDER_ROUTER_INTERNAL)
+                .action(RouterConstants.ACTION_SERVICE_CONNECT_STATUS_CHECK)
+                .cacheStrategy(MemoryCacheStrategy.FIXED)
+                .build();
+        RouterResponse<Boolean> response = RouterManager.getInstance().request(context, request);
+        return response != null && response.isSuccess() && response.getResult() != null && response.getResult();
     }
 
     /**
@@ -84,7 +100,7 @@ public class Router {
     /**
      * Custom Router Cache
      *
-     * @param routerCache
+     * @param routerCache your custom router cache
      */
     public synchronized static void setRouterCache(RouterCache routerCache) {
         CACHE = routerCache;

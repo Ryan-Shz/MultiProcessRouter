@@ -16,24 +16,30 @@ import com.sc.framework.router.Router;
 public class SplashActivity extends AppCompatActivity {
 
     private InitializeCompleteReceiver receiver;
+    private boolean mReceiverRegister = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        if (Router.isRouterServiceInitCompleted()) {
+        // enter main activity if router service has been initialized
+        if (Router.checkRouterServiceInitCompleted(this)) {
             startMainActivity();
             return;
         }
-        receiver = new InitializeCompleteReceiver() {
-            @Override
-            protected void onRouterServiceInitCompleted() {
-                startMainActivity();
-            }
-        };
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(InitializeCompleteReceiver.ACTION_ROUTER_SERVICE_COMPLETED);
-        registerReceiver(receiver, filter);
+        // register InitializeCompleteReceiver to receive router initialized broadcast.
+        if (!mReceiverRegister) {
+            receiver = new InitializeCompleteReceiver() {
+                @Override
+                protected void onRouterServiceInitCompleted() {
+                    startMainActivity();
+                }
+            };
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(InitializeCompleteReceiver.ACTION_ROUTER_SERVICE_COMPLETED);
+            registerReceiver(receiver, filter);
+            mReceiverRegister = true;
+        }
     }
 
     /**
@@ -48,6 +54,9 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(receiver);
+        if (mReceiverRegister) {
+            unregisterReceiver(receiver);
+            mReceiverRegister = false;
+        }
     }
 }

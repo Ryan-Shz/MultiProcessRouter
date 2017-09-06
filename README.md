@@ -68,27 +68,33 @@ Router初始化时,动态注册InitializeCompleteReceiver，并实现onRouterSer
 public class SplashActivity extends AppCompatActivity {
 
     private InitializeCompleteReceiver receiver;
+    private boolean mReceiverRegister = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);        
-        if (Router.isRouterServiceInitCompleted()) {
+        setContentView(R.layout.activity_splash);
+        // enter main activity if router service has been initialized
+        if (Router.checkRouterServiceInitCompleted(this)) {
             startMainActivity();
             return;
         }
-        receiver = new InitializeCompleteReceiver() {
-            @Override
-            protected void onRouterServiceInitCompleted() {
-               startMainActivity();
-            }
-        };
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(InitializeCompleteReceiver.ACTION_ROUTER_SERVICE_COMPLETED);
-        registerReceiver(receiver, filter);
+        // register InitializeCompleteReceiver to receive router initialized broadcast.
+        if (!mReceiverRegister) {
+            receiver = new InitializeCompleteReceiver() {
+                @Override
+                protected void onRouterServiceInitCompleted() {
+                    startMainActivity();
+                }
+            };
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(InitializeCompleteReceiver.ACTION_ROUTER_SERVICE_COMPLETED);
+            registerReceiver(receiver, filter);
+            mReceiverRegister = true;
+        }
     }
-    
-	/**
+
+    /**
      * Start your main activity
      */
     private void startMainActivity() {
@@ -100,7 +106,10 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(receiver);
+        if (mReceiverRegister) {
+            unregisterReceiver(receiver);
+            mReceiverRegister = false;
+        }
     }
 }
 ```

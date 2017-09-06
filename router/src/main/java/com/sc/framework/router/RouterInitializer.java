@@ -19,6 +19,10 @@ class RouterInitializer {
         }
         registerProviders(process);
         if (process.equals(ProcessUtils.getRouterProcess(context))) {
+            RouterProvider provider = new InternalServiceCheckProvider();
+            RouterAction<Void, Boolean> action = new InternalServiceCheckAction();
+            provider.addAction(action);
+            RouterManager.getInstance().registerProvider(provider);
             WideRouterManager.getInstance().registerServices(context, serviceRegister.getServices());
         } else {
             RouterManager.getInstance().bindWideRouterService(context.getApplicationContext());

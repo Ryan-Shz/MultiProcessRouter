@@ -2,7 +2,6 @@ package com.sc.sample;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Process;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -101,13 +100,5 @@ public class MainActivity extends AppCompatActivity {
                 cache.remove(key);
             }
         });
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Process.killProcess(Process.myPid());
-        System.exit(0);
     }
 }

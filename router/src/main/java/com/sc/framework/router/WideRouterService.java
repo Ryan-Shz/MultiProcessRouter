@@ -6,6 +6,8 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 
+import com.sc.framework.router.utils.ProcessUtils;
+
 /**
  * @author ShamsChu
  * @Date 17/7/14 上午11:34
@@ -22,13 +24,20 @@ public class WideRouterService extends Service {
         public RouterResponse route(RouterRequest routerRequest) throws RemoteException {
             RouterResponse response;
             try {
-                response = WideRouterManager.getInstance().route(WideRouterService.this, routerRequest);
+                String process = routerRequest.getProcess();
+                String routerProcess = ProcessUtils.getRouterProcess(WideRouterService.this);
+                // if request router process provider, using local router manager
+                if (process.equals(routerProcess)) {
+                    response = RouterManager.getInstance().request(WideRouterService.this, routerRequest);
+                } else {
+                    response = WideRouterManager.getInstance().route(WideRouterService.this, routerRequest);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 response = new RouterResponse.Builder<>()
-                    .error(e.getMessage())
-                    .code(RouterResponse.CODE_ERROR)
-                    .build();
+                        .error(e.getMessage())
+                        .code(RouterResponse.CODE_ERROR)
+                        .build();
             }
             return response;
         }

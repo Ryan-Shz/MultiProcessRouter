@@ -60,19 +60,15 @@ class WideRouterManager {
     }
 
     RouterResponse route(Context context, RouterRequest request) throws RouterException, RemoteException {
-        String mRouterProcessName = ProcessUtils.getRouterProcess(context);
         String process = request.getProcess();
-        if (process.equals(mRouterProcessName)) {
-            throw new RouterException("Unable to request the Router Service! process: " + process);
-        }
         IWideRouterAIDL wideRouterAIDL = mWideRouterAIDLMaps.get(process);
         if (wideRouterAIDL == null) {
             if (!bindService(context, process)) {
                 return new RouterResponse.Builder<>()
-                    .code(RouterResponse.CODE_ERROR)
-                    .error("Unable to connect to the process: " + process)
-                    .result(null)
-                    .build();
+                        .code(RouterResponse.CODE_ERROR)
+                        .error("Unable to connect to the process: " + process)
+                        .result(null)
+                        .build();
             }
         }
         RouterResponse response = null;
