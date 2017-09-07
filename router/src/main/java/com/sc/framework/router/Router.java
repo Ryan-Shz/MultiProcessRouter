@@ -52,7 +52,7 @@ public class Router {
     }
 
     public synchronized static void unRegister(@NonNull Context context) {
-        RouterManager.getInstance().unbindMultiRouterServices(context);
+        RouterManager.getInstance().unbindWideRouterService(context);
     }
 
     private static boolean isRequestValid(RouterRequest request) {
