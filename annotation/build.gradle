@@ -1,8 +1,41 @@
 apply plugin: 'java'
 
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'annotation'
+
+    publishedGroupId = 'com.sc.framework'
+    libraryName = 'Annotation'
+    artifact = 'annotation'
+
+    libraryDescription = 'Router framework annotation.'
+
+    siteUrl = 'https://github.com/ShamsChu/MultiProcessRouter'
+    gitUrl = 'https://github.com/ShamsChu/MultiProcessRouter.git'
+
+    libraryVersion = '1.0.0'
+
+    developerId = 'shamschu'
+    developerName = 'shamschu'
+    developerEmail = 'shamschu@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+}
+
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
