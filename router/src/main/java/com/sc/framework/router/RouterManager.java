@@ -52,10 +52,10 @@ final class RouterManager {
             mInitialize = mExceptionHandler.tryReInitialize(context);
             if (!mInitialize) {
                 return new RouterResponse.Builder<V>()
-                    .error("Router service is not registered! are you sure call the Router.register(Context Context, IRouterServiceRegister serviceRegister)?")
-                    .code(RouterResponse.CODE_ERROR)
-                    .result(null)
-                    .build();
+                        .error("Router service is not registered! are you sure call the Router.register(Context Context, IRouterServiceRegister serviceRegister)?")
+                        .code(RouterResponse.CODE_ERROR)
+                        .result(null)
+                        .build();
             }
         }
         String process = request.getProcess();
@@ -64,27 +64,27 @@ final class RouterManager {
         String currentProcess = ProcessUtils.getCurrentProcessName(context);
         if (currentProcess == null) {
             return new RouterResponse.Builder<V>()
-                .result(null)
-                .code(RouterResponse.CODE_PROCESS_NO_RUNNING)
-                .error("Unable to connect to the process, because it is not running!")
-                .build();
+                    .result(null)
+                    .code(RouterResponse.CODE_PROCESS_NO_RUNNING)
+                    .error("Unable to connect to the process, because it is not running!")
+                    .build();
         }
         if (process == null || process.equals(currentProcess)) {
             RouterProvider provider = findProvider(providerName);
             if (provider == null) {
                 return new RouterResponse.Builder<V>()
-                    .result(null)
-                    .code(RouterResponse.CODE_PROVIDER_NO_FOUND)
-                    .error("Cannot find the specified Provider: " + providerName + ", make sure you have already registered it.")
-                    .build();
+                        .result(null)
+                        .code(RouterResponse.CODE_PROVIDER_NO_FOUND)
+                        .error("Cannot find the specified Provider: " + providerName + ", make sure you have already registered it.")
+                        .build();
             }
             RouterAction routerAction = provider.findAction(action);
             if (routerAction == null) {
                 return new RouterResponse.Builder<V>()
-                    .result(null)
-                    .code(RouterResponse.CODE_ACTION_NO_FOUND)
-                    .error("Cannot find the specified Action: " + action + ", make sure you have already registered it.")
-                    .build();
+                        .result(null)
+                        .code(RouterResponse.CODE_ACTION_NO_FOUND)
+                        .error("Cannot find the specified Action: " + action + ", make sure you have already registered it.")
+                        .build();
             }
             return routerAction.invoke(context, request);
         }
@@ -96,9 +96,9 @@ final class RouterManager {
             Log.v(TAG, "Wide Router Service has not been connected, try to connect...");
             Future<Object> future = mExecutorService.submit(new WideRouterRequestAsyncTask(context, request));
             return new RouterResponse.Builder<>()
-                .code(RouterResponse.CODE_SUCCESS)
-                .future(future)
-                .build();
+                    .code(RouterResponse.CODE_SUCCESS)
+                    .future(future)
+                    .build();
         }
         return wideRequest(request);
     }
@@ -109,10 +109,10 @@ final class RouterManager {
         } catch (RemoteException e) {
             e.printStackTrace();
             return new RouterResponse.Builder<>()
-                .error(e.getMessage())
-                .code(RouterResponse.CODE_ERROR)
-                .result(null)
-                .build();
+                    .error(e.getMessage())
+                    .code(RouterResponse.CODE_ERROR)
+                    .result(null)
+                    .build();
         }
     }
 
@@ -136,12 +136,14 @@ final class RouterManager {
     }
 
     void bindWideRouterService(Context context) {
+        context = context.getApplicationContext();
         Intent intent = new Intent(context, WideRouterService.class);
         mWideRouterServiceConnection = new WideRouterServiceConnection();
         context.bindService(intent, mWideRouterServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     void unbindWideRouterService(Context context) {
+        context = context.getApplicationContext();
         context.unbindService(mWideRouterServiceConnection);
     }
 
