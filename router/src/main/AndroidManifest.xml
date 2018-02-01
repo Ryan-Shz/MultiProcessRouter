@@ -2,8 +2,7 @@
 
     package="com.sc.framework.router">
 
-    <application android:allowBackup="true"
-        android:supportsRtl="true">
+    <application >
 
         <service
             android:name=".WideRouterService"
