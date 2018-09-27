@@ -3,14 +3,28 @@ package com.sc.framework.router;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 
 /**
  * @author ShamsChu
  * @Date 17/8/30 下午5:54
  */
-public abstract class InitializeCompleteReceiver extends BroadcastReceiver {
+public class InitializeCompleteReceiver extends BroadcastReceiver {
 
-    public static final String ACTION_ROUTER_SERVICE_COMPLETED = "action.router.service.completed";
+    private static final String ACTION_ROUTER_SERVICE_COMPLETED = "action.router.service.completed";
+    private Callback mCallback;
+
+    private InitializeCompleteReceiver(Callback callback) {
+        mCallback = callback;
+    }
+
+    public static BroadcastReceiver register(Context context, Callback callback) {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_ROUTER_SERVICE_COMPLETED);
+        InitializeCompleteReceiver receiver = new InitializeCompleteReceiver(callback);
+        context.registerReceiver(receiver, filter);
+        return receiver;
+    }
 
     public static void send(Context context) {
         Intent intent = new Intent(ACTION_ROUTER_SERVICE_COMPLETED);
@@ -20,11 +34,19 @@ public abstract class InitializeCompleteReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        if (action.equals(ACTION_ROUTER_SERVICE_COMPLETED)) {
-            onRouterServiceInitCompleted();
+        if (ACTION_ROUTER_SERVICE_COMPLETED.equals(action)) {
+            doCallback();
         }
     }
 
-    protected abstract void onRouterServiceInitCompleted();
+    private void doCallback() {
+        if (mCallback != null) {
+            mCallback.onRouterServiceInitCompleted();
+        }
+    }
+
+    public interface Callback {
+        void onRouterServiceInitCompleted();
+    }
 
 }

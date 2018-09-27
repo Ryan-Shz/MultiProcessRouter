@@ -106,6 +106,7 @@ public class Router {
         CACHE = routerCache;
     }
 
+    @SuppressWarnings("unchecked")
     private static <T> RouterResponse<T> getMemoryCache(RouterRequest request) {
         return CACHE.getCache(request);
     }

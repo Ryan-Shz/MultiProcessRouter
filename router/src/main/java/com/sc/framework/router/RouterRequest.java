@@ -31,6 +31,7 @@ public class RouterRequest<T> implements Parcelable {
         mCacheStrategy = builder.mCacheStrategy;
     }
 
+    @SuppressWarnings("unchecked")
     protected RouterRequest(Parcel in) {
         mProcess = in.readString();
         mProvider = in.readString();

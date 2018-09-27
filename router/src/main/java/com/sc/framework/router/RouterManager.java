@@ -47,6 +47,7 @@ final class RouterManager {
         return SingletonHolder.INSTANCE;
     }
 
+    @SuppressWarnings("unchecked")
     <V> RouterResponse<V> request(@NonNull Context context, @NonNull RouterRequest request) {
         if (!mInitialize) {
             mInitialize = mExceptionHandler.tryReInitialize(context);
