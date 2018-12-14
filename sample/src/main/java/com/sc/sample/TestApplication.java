@@ -3,10 +3,9 @@ package com.sc.sample;
 import android.app.Application;
 import android.util.Log;
 
-import com.sc.framework.router.IRouterServiceRegister;
-import com.sc.framework.router.LocalRouterService;
+import com.sc.framework.router.LocalRouteService;
 import com.sc.framework.router.Router;
-import com.sc.framework.router.utils.ProcessUtils;
+import com.sc.framework.router.ProcessUtils;
 import com.sc.sample.service.MainProcessService;
 import com.sc.sample.service.SecondProcessService;
 
@@ -14,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author ShamsChu
+ * @author shamschu
  * @Date 17/8/28 下午2:13
  */
 public class TestApplication extends Application {
@@ -23,15 +22,10 @@ public class TestApplication extends Application {
     public void onCreate() {
         super.onCreate();
         // 路由框架初始化
-        Router.register(this, new IRouterServiceRegister() {
-            @Override
-            public Map<String, Class<? extends LocalRouterService>> getServices() {
-                Map<String, Class<? extends LocalRouterService>> services = new HashMap<>();
-                services.put(ProcessUtils.getMainProcess(TestApplication.this), MainProcessService.class);
-                services.put(ProcessUtils.getMainProcess(TestApplication.this) + ProcessUtils.COLON + "second", SecondProcessService.class);
-                return services;
-            }
-        });
+        Map<String, Class<? extends LocalRouteService>> services = new HashMap<>();
+        services.put(ProcessUtils.getMainProcess(TestApplication.this), MainProcessService.class);
+        services.put(ProcessUtils.getMainProcess(TestApplication.this) + ProcessUtils.COLON + "second", SecondProcessService.class);
+        Router.init(this, services);
     }
 
     @Override

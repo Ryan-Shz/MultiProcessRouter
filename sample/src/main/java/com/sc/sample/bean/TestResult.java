@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * @author ShamsChu
+ * @author shamschu
  * @Date 17/8/28 下午6:49
  */
 public class TestResult implements Parcelable {

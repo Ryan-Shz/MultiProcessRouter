@@ -3,51 +3,50 @@ package com.sc.framework.router;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.sc.framework.router.cache.MemoryCacheStrategy;
-
 /**
- * @author ShamsChu
+ * @author shamschu
  * @Date 17/5/10 下午3:51
  */
-public class RouterRequest<T> implements Parcelable {
+public class RouteRequest<T> implements Parcelable {
 
     private volatile int hashCode = 0;
 
     private String mProcess;
-
     private String mProvider;
-
     private String mAction;
-
+    // 缓存策略
     private MemoryCacheStrategy mCacheStrategy;
-
+    // 请求参数
     private T mParameter;
+    // 只在本地进程寻找
+    private boolean inJustRouteLocal;
 
-    private RouterRequest(Builder<T> builder) {
+    protected RouteRequest(Builder<T> builder) {
         mProcess = builder.mProcess;
         mProvider = builder.mProvider;
         mAction = builder.mAction;
         mParameter = builder.mParameter;
         mCacheStrategy = builder.mCacheStrategy;
+        inJustRouteLocal = builder.inJustRouteLocal;
     }
 
     @SuppressWarnings("unchecked")
-    protected RouterRequest(Parcel in) {
+    protected RouteRequest(Parcel in) {
         mProcess = in.readString();
         mProvider = in.readString();
         mAction = in.readString();
         mParameter = (T) in.readValue(this.getClass().getClassLoader());
     }
 
-    public static final Creator<RouterRequest> CREATOR = new Creator<RouterRequest>() {
+    public static final Creator<RouteRequest> CREATOR = new Creator<RouteRequest>() {
         @Override
-        public RouterRequest createFromParcel(Parcel in) {
-            return new RouterRequest(in);
+        public RouteRequest createFromParcel(Parcel in) {
+            return new RouteRequest(in);
         }
 
         @Override
-        public RouterRequest[] newArray(int size) {
-            return new RouterRequest[size];
+        public RouteRequest[] newArray(int size) {
+            return new RouteRequest[size];
         }
     };
 
@@ -71,6 +70,7 @@ public class RouterRequest<T> implements Parcelable {
         private String mAction;
         private T mParameter;
         private MemoryCacheStrategy mCacheStrategy = MemoryCacheStrategy.NONE;
+        private boolean inJustRouteLocal;
 
         public Builder<T> process(String process) {
             mProcess = process;
@@ -97,8 +97,13 @@ public class RouterRequest<T> implements Parcelable {
             return this;
         }
 
-        public RouterRequest<T> build() {
-            return new RouterRequest<>(this);
+        public Builder<T> inJustRouteLocal(boolean inJustLocal) {
+            this.inJustRouteLocal = inJustLocal;
+            return this;
+        }
+
+        public RouteRequest<T> build() {
+            return new RouteRequest<>(this);
         }
 
     }
@@ -123,19 +128,27 @@ public class RouterRequest<T> implements Parcelable {
         return mCacheStrategy;
     }
 
+    public boolean isInJustRouteLocal() {
+        return inJustRouteLocal;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof RouterRequest)) {
+        if (!(obj instanceof RouteRequest)) {
             return false;
         }
-        RouterRequest request = (RouterRequest) obj;
+        RouteRequest request = (RouteRequest) obj;
         String process = request.getProcess();
         String provider = request.getProvider();
         String action = request.getAction();
         return mProcess.equals(process) && mProvider.equals(provider) && mAction.equals(action);
+    }
+
+    public void setInJustRouteLocal(boolean inJustRouteLocal) {
+        this.inJustRouteLocal = inJustRouteLocal;
     }
 
     @Override

@@ -7,7 +7,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 
 /**
- * @author ShamsChu
+ * @author shamschu
  * @Date 17/8/24 上午9:50
  */
 public abstract class AbsSingleAnnotationHandler implements Comparable<AbsSingleAnnotationHandler> {

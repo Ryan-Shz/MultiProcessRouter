@@ -1,12 +1,12 @@
 package com.sc.framework.router;
 
 /**
- * @author ShamsChu
+ * @author shamschu
  * @Date 17/8/28 上午10:15
  */
-class RouterException extends Exception {
+class RouteException extends Exception {
 
-    RouterException(String message) {
+    RouteException(String message) {
         super(message);
     }
 }

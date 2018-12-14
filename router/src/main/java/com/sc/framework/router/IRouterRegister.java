@@ -1,7 +1,7 @@
 package com.sc.framework.router;
 
 /**
- * @author ShamsChu
+ * @author shamschu
  * @Date 17/8/24 下午6:19
  */
 public interface IRouterRegister {

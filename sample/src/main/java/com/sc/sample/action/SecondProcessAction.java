@@ -4,26 +4,26 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.sc.framework.annotation.Action;
-import com.sc.framework.router.RouterAction;
-import com.sc.framework.router.RouterRequest;
-import com.sc.framework.router.RouterResponse;
+import com.sc.framework.router.RouteRequest;
+import com.sc.framework.router.RouteResponse;
+import com.sc.framework.router.RouteAction;
 import com.sc.sample.bean.TestResult;
 import com.sc.sample.provider.SecondProcessProvider;
 
 /**
- * @author ShamsChu
+ * @author shamschu
  * @Date 17/8/30 上午9:10
  */
 @Action(provider = SecondProcessProvider.class)
-public class SecondProcessAction extends RouterAction<String, TestResult> {
+public class SecondProcessAction extends RouteAction<String, TestResult> {
 
     @Override
-    public RouterResponse<TestResult> invoke(Context context, RouterRequest<String> request) {
+    public RouteResponse<TestResult> invoke(Context context, RouteRequest<String> request) {
         String data = TextUtils.isEmpty(request.getParameter()) ? "request success! no request parameters"
             : "request success! receive a request parameter: " + request.getParameter();
         TestResult result = new TestResult();
         result.setRtnMessage(data);
-        return new RouterResponse.Builder<TestResult>()
+        return new RouteResponse.Builder<TestResult>()
             .result(result)
             .build();
     }

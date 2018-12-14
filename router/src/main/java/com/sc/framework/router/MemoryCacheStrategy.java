@@ -1,7 +1,7 @@
-package com.sc.framework.router.cache;
+package com.sc.framework.router;
 
 /**
- * @author ShamsChu
+ * @author shamschu
  * @Date 17/8/29 下午7:26
  */
 public enum MemoryCacheStrategy {

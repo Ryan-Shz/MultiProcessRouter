@@ -3,24 +3,24 @@ package com.sc.sample.action;
 import android.content.Context;
 
 import com.sc.framework.annotation.Action;
-import com.sc.framework.router.RouterAction;
-import com.sc.framework.router.RouterRequest;
-import com.sc.framework.router.RouterResponse;
+import com.sc.framework.router.RouteResponse;
+import com.sc.framework.router.RouteAction;
+import com.sc.framework.router.RouteRequest;
 import com.sc.sample.bean.TestResult;
 import com.sc.sample.provider.MainProcessProvider;
 
 /**
- * @author ShamsChu
+ * @author shamschu
  * @Date 17/8/29 下午3:00
  */
 @Action(provider = MainProcessProvider.class)
-public class MainProcessActionTwo extends RouterAction<Void, TestResult> {
+public class MainProcessActionTwo extends RouteAction<Void, TestResult> {
 
     @Override
-    public RouterResponse<TestResult> invoke(Context context, RouterRequest request) {
+    public RouteResponse<TestResult> invoke(Context context, RouteRequest request) {
         TestResult result = new TestResult();
         result.setRtnMessage("this is second router test!");
-        return new RouterResponse.Builder<TestResult>()
+        return new RouteResponse.Builder<TestResult>()
             .result(result)
             .build();
     }

@@ -21,7 +21,7 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 /**
- * @author ShamsChu
+ * @author shamschu
  * @Date 17/8/24 下午2:30
  */
 public abstract class AbsAnnotationProcessor extends AbstractProcessor {

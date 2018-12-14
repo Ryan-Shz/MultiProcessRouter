@@ -5,110 +5,92 @@ import android.os.Process;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.sc.framework.router.cache.DefaultRouterCache;
-import com.sc.framework.router.cache.MemoryCacheStrategy;
-import com.sc.framework.router.cache.RouterCache;
-import com.sc.framework.router.constants.RouterConstants;
-import com.sc.framework.router.utils.ProcessUtils;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 /**
- * @author ShamsChu
+ * @author shamschu
  * @Date 17/8/26 下午6:45
  */
 public class Router {
 
+    private static final String TARGET_CLASS = "com.sc.framework.router.RouteRegister";
     private static final String TAG = Router.class.getName();
-    private static RouterCache CACHE = new DefaultRouterCache();
+    private static RouteCache CACHE = new DefaultRouteCache();
+    private static boolean sInitialized = false;
 
     private Router() {
         throw new RuntimeException("Can't call the constructor of the Router");
     }
 
-    public static <V> RouterResponse<V> route(@NonNull Context context, @NonNull RouterRequest request) {
+    @SuppressWarnings("unchecked")
+    public static <V> RouteResponse<V> route(@NonNull Context context, @NonNull RouteRequest request) {
+        checkInitialized();
         if (!isRequestValid(request)) {
-            return new RouterResponse.Builder<V>()
-                    .code(RouterResponse.CODE_ERROR)
-                    .error("RouterRequest is not valid!")
-                    .build();
+            throw new IllegalArgumentException();
         }
-        RouterResponse<V> response = getMemoryCache(request);
+        RouteResponse<V> response = getMemoryCache(request);
         if (response != null) {
             Log.v(TAG, "find the specified request cache, return");
             return response;
         }
-        RouterResponse<V> routerResponse = RouterManager.getInstance().request(context, request);
-        CACHE.putCache(request, routerResponse);
-        return routerResponse;
+        return RouteManager.getInstance().request(context, request);
     }
 
-    public synchronized static void register(@NonNull Context context, @NonNull IRouterServiceRegister serviceRegister) {
-        RouterManager.getInstance().initialize(context, serviceRegister);
+    public static synchronized void init(Context context, Map<String, Class<? extends LocalRouteService>> services) {
+        try {
+            if (ProcessUtils.runningInRouterProcess(context)) {
+                WideRouteManager.getInstance().registerServices(context, services);
+            } else {
+                registerProviders(context);
+                WideRouteService.start(context);
+            }
+            sInitialized = true;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
     }
 
-    public synchronized static void killCurrProcess(Context context) {
-        unRegister(context);
+    private static synchronized void registerProviders(Context context) throws
+            ClassNotFoundException, IllegalAccessException, InstantiationException {
+        String process = ProcessUtils.getCurrentProcessName(context);
+        Class<?> targetClass = Class.forName(TARGET_CLASS);
+        IRouterRegister register = (IRouterRegister) targetClass.newInstance();
+        register.register(process);
+    }
+
+    public synchronized static void killCurrProcess() {
         Process.killProcess(Process.myPid());
         System.exit(0);
     }
 
-    public synchronized static void unRegister(@NonNull Context context) {
-        RouterManager.getInstance().unbindWideRouterService(context);
-    }
-
-    private static boolean isRequestValid(RouterRequest request) {
+    private static boolean isRequestValid(RouteRequest request) {
         if (request.getProcess() == null) {
-            Log.e(TAG, "RouterRequest process can not be null! don't do anything");
-            return false;
+            throw new IllegalArgumentException();
         }
         if (request.getProvider() == null) {
-            Log.e(TAG, "RouterRequest provider can not be null! don't do anything");
-            return false;
+            throw new IllegalArgumentException();
         }
         if (request.getAction() == null) {
-            Log.e(TAG, "RouterRequest action can not be null! don't do anything");
-            return false;
+            throw new IllegalArgumentException();
         }
         return true;
     }
 
-    /**
-     * check if router service is initialized
-     *
-     * @param context Context
-     * @return if router service is initialized return true or false
-     */
-    public static boolean checkRouterServiceInitCompleted(Context context) {
-        RouterRequest request = new RouterRequest.Builder()
-                .process(ProcessUtils.getRouterProcess(context))
-                .provider(RouterConstants.PROVIDER_ROUTER_INTERNAL)
-                .action(RouterConstants.ACTION_SERVICE_CONNECT_STATUS_CHECK)
-                .cacheStrategy(MemoryCacheStrategy.FIXED)
-                .build();
-        RouterResponse<Boolean> response = RouterManager.getInstance().request(context, request);
-        return response != null && response.isSuccess() && response.getResult() != null && response.getResult();
-    }
-
-    /**
-     * get Router service memory cache
-     *
-     * @return RouterCache
-     */
-    public static RouterCache getRouterCache() {
-        return CACHE;
-    }
-
-    /**
-     * Custom Router Cache
-     *
-     * @param routerCache your custom router cache
-     */
-    public synchronized static void setRouterCache(RouterCache routerCache) {
-        CACHE = routerCache;
-    }
-
     @SuppressWarnings("unchecked")
-    private static <T> RouterResponse<T> getMemoryCache(RouterRequest request) {
+    private static <T> RouteResponse<T> getMemoryCache(RouteRequest request) {
         return CACHE.getCache(request);
     }
 
+    private static void checkInitialized() {
+        if (!sInitialized) {
+            throw new IllegalStateException("router not initialized!");
+        }
+    }
 }

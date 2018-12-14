@@ -1,10 +1,10 @@
 package com.sc.sample.service;
 
-import com.sc.framework.router.LocalRouterService;
+import com.sc.framework.router.LocalRouteService;
 
 /**
- * @author ShamsChu
+ * @author shamschu
  * @Date 17/8/30 下午4:45
  */
-public class SecondProcessService extends LocalRouterService {
+public class SecondProcessService extends LocalRouteService {
 }

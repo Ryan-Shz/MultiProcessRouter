@@ -3,18 +3,18 @@ package com.sc.framework.router;
 import android.content.Context;
 
 /**
- * @author ShamsChu
+ * @author shamschu
  * @Date 17/5/10 下午3:54
  */
-public abstract class RouterAction<T, V> {
+public abstract class RouteAction<T, V> {
 
     /**
      * to perform an action function
      * @param context Context
-     * @param request RouterRequest
-     * @return RouterResponse
+     * @param request RouteRequest
+     * @return RouteResponse
      */
-    public abstract RouterResponse<V> invoke(Context context, RouterRequest<T> request);
+    public abstract RouteResponse<V> invoke(Context context, RouteRequest<T> request);
 
     /**
      * action name, default is class simple name

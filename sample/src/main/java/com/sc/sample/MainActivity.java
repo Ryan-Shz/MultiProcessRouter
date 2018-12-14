@@ -6,12 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.sc.framework.router.RouteRequest;
+import com.sc.framework.router.RouteResponse;
 import com.sc.framework.router.Router;
-import com.sc.framework.router.RouterRequest;
-import com.sc.framework.router.RouterResponse;
-import com.sc.framework.router.cache.MemoryCacheStrategy;
-import com.sc.framework.router.cache.DefaultRouterCache;
-import com.sc.framework.router.utils.ProcessUtils;
+import com.sc.framework.router.MemoryCacheStrategy;
+import com.sc.framework.router.ProcessUtils;
 import com.sc.sample.bean.TestResult;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,13 +23,13 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.local_router_request_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RouterRequest request = new RouterRequest.Builder()
-                    .process(ProcessUtils.getMainProcess(v.getContext()))
-                    .provider("MainProcessProvider")
-                    .action("MainProcessActionOne")
-                    .cacheStrategy(MemoryCacheStrategy.FIXED)
-                    .build();
-                RouterResponse<String> response = Router.route(MainActivity.this, request);
+                RouteRequest request = new RouteRequest.Builder()
+                        .process(ProcessUtils.getMainProcess(v.getContext()))
+                        .provider("MainProcessProvider")
+                        .action("MainProcessActionOne")
+                        .cacheStrategy(MemoryCacheStrategy.FIXED)
+                        .build();
+                RouteResponse<String> response = Router.route(MainActivity.this, request);
                 if (response == null) {
                     return;
                 }
@@ -45,35 +44,46 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.wide_router_without_parameter_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RouterRequest request = new RouterRequest.Builder()
-                    .process(getPackageName() + ":second")
-                    .provider("SecondProcessProvider")
-                    .action("SecondProcessAction")
-                    .cacheStrategy(MemoryCacheStrategy.NONE)
-                    .build();
-                RouterResponse<TestResult> response = Router.route(MainActivity.this, request);
-                if (response == null) {
-                    return;
-                }
-                if (response.isSuccess()) {
-                    Toast.makeText(MainActivity.this, response.getResult().getRtnMessage(), Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(MainActivity.this, response.getError(), Toast.LENGTH_LONG).show();
-                }
+                new Thread(){
+                    @Override
+                    public void run() {
+                        super.run();
+                        RouteRequest request = new RouteRequest.Builder()
+                                .process(getPackageName() + ":second")
+                                .provider("SecondProcessProvider")
+                                .action("SecondProcessAction")
+                                .cacheStrategy(MemoryCacheStrategy.NONE)
+                                .build();
+                        final RouteResponse<TestResult> response = Router.route(MainActivity.this, request);
+                        if (response == null) {
+                            return;
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (response.isSuccess()) {
+                                    Toast.makeText(MainActivity.this, response.getResult() == null ? "" : response.getResult().getRtnMessage(), Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(MainActivity.this, response.getError(), Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+                    }
+                }.start();
             }
         });
 
         findViewById(R.id.wide_router_with_parameter_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RouterRequest<String> request = new RouterRequest.Builder<String>()
-                    .parameter("this is a test parameter")
-                    .process(getPackageName() + ":second")
-                    .provider("SecondProcessProvider")
-                    .action("SecondProcessAction")
-                    .cacheStrategy(MemoryCacheStrategy.FIXED)
-                    .build();
-                RouterResponse<TestResult> response = Router.route(MainActivity.this, request);
+                RouteRequest<String> request = new RouteRequest.Builder<String>()
+                        .parameter("this is a test parameter")
+                        .process(getPackageName() + ":second")
+                        .provider("SecondProcessProvider")
+                        .action("SecondProcessAction")
+                        .cacheStrategy(MemoryCacheStrategy.FIXED)
+                        .build();
+                RouteResponse<TestResult> response = Router.route(MainActivity.this, request);
                 if (response == null) {
                     return;
                 }
@@ -92,13 +102,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.remove_cache_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DefaultRouterCache cache = (DefaultRouterCache) Router.getRouterCache();
-                RouterRequest key = cache.generateCacheKey(ProcessUtils.getMainProcess(v.getContext()), "MainProcessProvider", "MainProcessActionOne");
-                cache.remove(key);
-            }
-        });
     }
 }

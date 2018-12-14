@@ -4,36 +4,34 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import java.util.concurrent.Future;
-
 /**
- * @author ShamsChu
+ * @author shamschu
  * @Date 17/5/10 下午3:55
  */
-public class RouterResponse<T> implements Parcelable {
+public class RouteResponse<T> implements Parcelable {
 
-    public static final int CODE_SUCCESS = 0;
+    private static final int CODE_SUCCESS = 0;
     public static final int CODE_ERROR = 1;
-    public static final int CODE_PROVIDER_NO_FOUND = 2;
-    public static final int CODE_ACTION_NO_FOUND = 3;
-    public static final int CODE_PROCESS_NO_RUNNING = 4;
 
     private int code;
     private T result;
     private String error;
-    /**
-     * used by local
-     */
-    private Future<T> future;
 
-    private RouterResponse(Builder<T> builder) {
+    public static RouteResponse error(String error) {
+        ERROR.error = error;
+        return ERROR;
+    }
+
+    private static final RouteResponse ERROR = new Builder().code(CODE_ERROR).build();
+
+    private RouteResponse(Builder<T> builder) {
         this.code = builder.code;
         this.result = builder.result;
         this.error = builder.error;
-        this.future = builder.future;
     }
 
-    protected RouterResponse(Parcel in) {
+    @SuppressWarnings("unchecked")
+    protected RouteResponse(Parcel in) {
         this.code = in.readInt();
         this.error = in.readString();
         try {
@@ -51,12 +49,8 @@ public class RouterResponse<T> implements Parcelable {
         private int code;
         private T result;
         private String error;
-        /**
-         * used by local
-         */
-        private Future<T> future;
 
-        Builder<T> code(int code) {
+        public Builder<T> code(int code) {
             this.code = code;
             return this;
         }
@@ -66,45 +60,28 @@ public class RouterResponse<T> implements Parcelable {
             return this;
         }
 
-        Builder<T> error(String error) {
+        public Builder<T> error(String error) {
             this.error = error;
             return this;
         }
 
-        Builder<T> future(Future<T> future) {
-            this.future = future;
-            return this;
-        }
-
-        public RouterResponse<T> build() {
-            return new RouterResponse<>(this);
+        public RouteResponse<T> build() {
+            return new RouteResponse<>(this);
         }
 
     }
 
-    public static final Creator<RouterResponse> CREATOR = new Creator<RouterResponse>() {
+    public static final Creator<RouteResponse> CREATOR = new Creator<RouteResponse>() {
         @Override
-        public RouterResponse createFromParcel(Parcel in) {
-            return new RouterResponse(in);
+        public RouteResponse createFromParcel(Parcel in) {
+            return new RouteResponse(in);
         }
 
         @Override
-        public RouterResponse[] newArray(int size) {
-            return new RouterResponse[size];
+        public RouteResponse[] newArray(int size) {
+            return new RouteResponse[size];
         }
     };
-
-    public void setResult(T result) {
-        this.result = result;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
 
     public T getResult() {
         return result;
@@ -128,10 +105,6 @@ public class RouterResponse<T> implements Parcelable {
 
     public String getError() {
         return error;
-    }
-
-    public Future<T> getFuture() {
-        return future;
     }
 
     public boolean isSuccess() {

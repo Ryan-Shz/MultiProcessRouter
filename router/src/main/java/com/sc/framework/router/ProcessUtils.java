@@ -1,4 +1,4 @@
-package com.sc.framework.router.utils;
+package com.sc.framework.router;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -23,14 +23,20 @@ public class ProcessUtils {
     public static String getCurrentProcessName(Context context) {
         int pid = android.os.Process.myPid();
         ActivityManager mActivityManager = (ActivityManager) context
-            .getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager
-            .getRunningAppProcesses()) {
-            if (appProcess.pid == pid) {
-                return appProcess.processName;
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        if (mActivityManager != null) {
+            for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager
+                    .getRunningAppProcesses()) {
+                if (appProcess.pid == pid) {
+                    return appProcess.processName;
+                }
             }
         }
         return null;
     }
 
+    public static boolean runningInRouterProcess(Context context) {
+        String curr = getCurrentProcessName(context);
+        return curr != null && curr.equals(getRouterProcess(context));
+    }
 }

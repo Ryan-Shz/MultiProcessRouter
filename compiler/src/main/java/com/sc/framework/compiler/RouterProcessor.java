@@ -18,7 +18,7 @@ import javax.annotation.processing.Processor;
 import javax.lang.model.element.Modifier;
 
 /**
- * @author ShamsChu
+ * @author shamschu
  * @Date 17/8/23 下午6:10
  */
 @AutoService(Processor.class)

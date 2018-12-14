@@ -29,10 +29,4 @@
         android:layout_height="wrap_content"
         android:text="Open Second process Activity"/>
 
-    <Button
-        android:id="@+id/remove_cache_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Remove Local Router Cache"/>
-
 </LinearLayout>
