@@ -1,11 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
-    package="com.sc.framework.router">
+    package="com.ryan.router">
 
     <application >
 
         <service
-            android:name=".WideRouteService"
+            android:name="com.ryan.router.WideRouteService"
             android:process=":router"/>
 
     </application>
